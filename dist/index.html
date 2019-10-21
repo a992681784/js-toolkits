@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<title>js-toolkits test</title>
+	<style>
+		html{
+			max-width: 1024px;
+			margin: 0 auto;
+		}
+		section{
+			padding: 5px;
+			background: #f7f7f7;
+		}
+		@media(min-width: 1024px) {
+			section{
+				padding: 0 20px 20px;
+			}
+		}
+	</style>
+</head>
+	<h1>js-toolkits</h1>
+	<h2>一个小巧而实用的js工具库</h2>
+	<section>
+		<code></code>
+	</section>
+<body>
+	<script>
+		window.onload = () => {
+			console.log('tks:',tks);
+
+			//trim 去除字符串空格,1个参数，去除前后空格；2个参数，去除所有空格
+			console.log('trim-----------');
+			let str1 = tks.trim(' trim ');
+			let str2 = tks.trim(' trim test ',true);
+
+			console.log(str1);
+			console.log(str2);
+
+			//each 支持遍历Object、Array，return false退出遍历
+			console.log('each-----------');
+			tks.each({aa:1, bb:2, cc:3},(v,i) => {
+				console.log(v,i);
+			})
+			tks.each([1,3,5,7,9],(v,i) => {
+				console.log(v,i);
+			})
+
+			//param Object转为为url参数
+			console.log('param-----------');
+			let p = tks.param({name:'li', age:18});
+			
+			console.log(p);
+
+			/*	
+			get 获取url参数，参数为0个时，获取当前url的所有参数;
+			参数为1个时，获取当前url指定参数；
+			参数为2个时，获取指定url的指定参数,第二个参数为true时，获取指定url所有参数
+			*/
+			console.log('get-----------');
+			let arg1 = tks.get();//所有参数
+			let arg2 = tks.get('name');//指定参数
+			let arg3 = tks.get('www.baidu.com?xx=1','xx');//指定url，指定参数
+			let arg4 = tks.get('www.baidu.com?xx=1&yy=2&zz=3',true);//指定url，所有参数
+
+			console.log(arg1);
+			console.log(arg2);
+			console.log(arg3);
+			console.log(arg4);
+
+			/*	
+			test 第一个参数为类型，第二个为需要检测的字符串
+			*/
+			console.log('test-----------');
+			let test1 = tks.test('phone','18888888888');
+			let test2 = tks.test('phone','123456');
+			let test3 = tks.test('email','123456com');
+			let test4 = tks.test('email','123456@qq.com');
+
+			console.log(test1);
+			console.log(test2);
+			console.log(test3);
+			console.log(test4);
+		}
+	</script>
+	<script>
+		let text = document.querySelector('script').innerText;
+
+		text = text.substr(text.indexOf('//') - 4);
+		text = text.substr(0,text.lastIndexOf('}'));
+
+		document.querySelector('code').innerText = text;
+	</script>
+<script type="text/javascript" src="js-toolkits.min.js"></script></body>
+
+</html>
