@@ -1,6 +1,6 @@
 {
   "name": "js-toolkits",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "一个小巧而实用的js工具库",
   "main": "dist/js-toolkits.min.js",
   "scripts": {
@@ -16,7 +16,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/weijhfly/js-tookits"
+    "url": "https://github.com/weijhfly/js-toolkits"
   },
   "author": "weijhfly",
   "license": "MIT",

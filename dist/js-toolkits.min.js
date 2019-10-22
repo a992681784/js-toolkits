@@ -1,5 +1,5 @@
 /**
- * js-toolkits v1.0.2
+ * js-toolkits v1.0.3
  * (c) 2019-2019 weijhfly https://github.com/weijhfly/js-toolkits
  * Licensed under MIT
  * Released on: oct 21, 2019

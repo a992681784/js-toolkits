@@ -6,7 +6,7 @@
 [npm-url]: https://npmjs.org/package/js-toolkits
 [downloads-image]: https://badgen.net/npm/dt/js-toolkits
 [downloads-url]: https://npmjs.org/package/js-toolkits
-一个封装获取url参数，手机号、邮箱正则检测，sessionStorage、localStorage、cookie操作等常用方法小插件
+一个封装获取url参数，手机号、邮箱正则检测，sessionStorage、localStorage、cookie操作等常用方法的js工具库
 ## 使用方式
 注：为简化操作，默认命名为"tks"
 
@@ -53,7 +53,7 @@ test|常用字符串检测|@param type {String} 类型<br>@param str {String} �
 storage| 操作sessionStorage、<br>localStorage、cookie|@param type {String} 类型(默认sessionStorage)，其他localStorage、cookie<br>这里使用了作者的另外一个小插件，具体请参考https://github.com/weijhfly/js-utils/tree/master/storage-util
 min|数组最小值|@param arr {Array} 数组
 max|数组最大值|@param arr {Array} 数组
-sort|数值升降排序|@param arr {Array} 数组<br>@param type {Boolean} 非false、0、''、null、undefined开启降序
+sort|数组升降排序|@param arr {Array} 数组<br>@param type {Boolean} 非false、0、''、null、undefined开启降序
 
 ## 代码示例
 ```js
@@ -162,7 +162,7 @@ let max = tks.max([2,4,6,8,10]);
 console.log(min,max);
 
 /**
- * sort 数值sort方法的修复版，支持升序降序
+ * sort 数组sort方法的修复版，支持升序降序
  * @param arr {Array} 数组
  * @param type {Boolean} 非false、0、''、null、undefined开启降序
  */
