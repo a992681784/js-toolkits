@@ -1,8 +1,8 @@
 {
   "name": "js-toolkits",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "一个小巧而实用的js工具库",
-  "main": "dist/js-tookits.min.js",
+  "main": "dist/js-toolkits.min.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --config config/webpack.config.js --mode development",
     "build": "cross-env rollup -c",
