@@ -50,7 +50,7 @@ each|遍历数值、对象|@param obj {Object\|Array} 遍历对象<br>@param cal
 param|对象转url参数|@param obj {Object\|Array} 需要转换的对象
 get|获取url参数|@param 参数为空时，获取当前url所有参数；<br>@param 参数为1个时，获取当前url的指定参数；<br>@param 参数为2个且第二个参数不为true时，获取指定url的指定参数；<br>@param 参数为2个且第二个参数为true时，获取指定url的所有参数；
 test|常用字符串检测|@param type {String} 类型<br>@param str {String} 需要检测的字符串
-storage| 操作sessionStorage、<br>localStorage、cookie|@param type {String} 类型(默认sessionStorage)，其他localStorage、cookie<br>这里使用了作者的另外一个小插件，具体请参考https://github.com/weijhfly/js-utils/tree/master/storage-util
+storage| 操作sessionStorage、<br>localStorage、cookie|@param type {String\|Number} 类型(默认sessionStorage 0)，其他localStorage 1、cookie 2 这里使用了作者的另外一个小插件，具体请参考https://github.com/weijhfly/js-utils/tree/master/storage-util
 min|数组最小值|@param arr {Array} 数组
 max|数组最大值|@param arr {Array} 数组
 sort|数组升降排序|@param arr {Array} 数组<br>@param type {Boolean} 非false、0、''、null、undefined开启降序
@@ -133,22 +133,22 @@ console.log(test4);
 /**
  * storage 操作sessionStorage、localStorage、cookie
  * 这里使用了作者的另外一个小插件，具体请参考https://github.com/weijhfly/js-utils/tree/master/storage-util
- * @param type {String} 类型(默认sessionStorage)，其他localStorage、cookie
+ * @param type {String|Number} 类型(默认sessionStorage 0)，其他localStorage 1、cookie 2
  */
 console.log('storage-----------');
 
 //注：Chrome不支持本地html设置cookie
 tks.storage().set('msg','你翩翩地路过，').get('msg',function(msg){
     console.log(msg);
-}).setType('localStorage').set('msg','以为不曾留下什么，').get('msg',function(msg){
+}).setType(1).set('msg','以为不曾留下什么，').get('msg',function(msg){
     console.log(msg);
-}).setType('cookie').set('msg','却在我心里有了思念，').get('msg',function(msg){
+}).setType(2).set('msg','却在我心里有了思念，').get('msg',function(msg){
     console.log(msg);
 }).setType().set('msg','若你还记得，').get('msg',function(msg){
     console.log(msg);
-}).setType('localStorage').set('msg','那个蝉鸣的夏天，').get('msg',function(msg){
+}).setType(1).set('msg','那个蝉鸣的夏天，').get('msg',function(msg){
     console.log(msg);
-}).setType('cookie').set('msg','有一个你，也有一个我。').get('msg',function(msg){
+}).setType(2).set('msg','有一个你，也有一个我。').get('msg',function(msg){
     console.log(msg);
 })
 

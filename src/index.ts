@@ -128,7 +128,7 @@ let toolkits = {
 	/**
 	 * storage 操作sessionStorage、localStorage、cookie
 	 * 这里使用了作者的另外一个小插件，具体请参考https://github.com/weijhfly/js-utils/tree/master/storage-util
-	 * @param type {String} 类型(默认sessionStorage)，其他localStorage、cookie
+	 * @param type {String|Number} 类型(默认sessionStorage 0)，其他localStorage 1、cookie 2
 	 */
 	storage(type: string) {
 		return new StorageUtil(type);

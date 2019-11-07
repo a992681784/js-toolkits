@@ -1,5 +1,5 @@
 /**
- * js-toolkits v1.0.3
+ * js-toolkits v1.0.4
  * (c) 2019-2019 weijhfly https://github.com/weijhfly/js-toolkits
  * Licensed under MIT
  * Released on: oct 21, 2019
@@ -8,16 +8,16 @@
 'use strict';
 
 /**
- * storage-util v1.0.3
+ * storage-util v1.0.4
  * (c) 2019-2019 weijhfly https://github.com/weijhfly/js-utils
  * Licensed under MIT
  */
 
 var StorageUtil = /** @class */ (function () {
     function StorageUtil(type, callback) {
-        this.type = type ? type : 'sessionStorage';
         this.success = typeof callback === 'object' ? callback.success : function () { };
         this.fail = typeof callback === 'object' ? callback.fail : function () { };
+        this.setType(type);
     }
     StorageUtil.prototype.isSupport = function () {
         return this.isCookie() ? document.cookie && navigator.cookieEnabled : typeof window[this.type] != 'undefined';
@@ -68,7 +68,9 @@ var StorageUtil = /** @class */ (function () {
         return this;
     };
     StorageUtil.prototype.setType = function (type) {
-        this.type = type || 'sessionStorage';
+        type = type ? type : 0;
+        var types = ['sessionStorage', 'localStorage', 'cookie'];
+        this.type = types[type] || type;
         return this;
     };
     StorageUtil.prototype.master = function (obj, flag, time) {
@@ -253,7 +255,7 @@ var toolkits = {
     /**
      * storage 操作sessionStorage、localStorage、cookie
      * 这里使用了作者的另外一个小插件，具体请参考https://github.com/weijhfly/js-utils/tree/master/storage-util
-     * @param type {String} 类型(默认sessionStorage)，其他localStorage、cookie
+     * @param type {String|Number} 类型(默认sessionStorage 0)，其他localStorage 1、cookie 2
      */
     storage: function (type) {
         return new StorageUtil(type);
