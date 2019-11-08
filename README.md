@@ -54,7 +54,7 @@ storage| 操作sessionStorage、<br>localStorage、cookie|@param type {String\|N
 min|数组最小值|@param arr {Array} 数组
 max|数组最大值|@param arr {Array} 数组
 sort|数组升降排序|@param arr {Array} 数组<br>@param type {Boolean} 非false、0、''、null、undefined开启降序
-eq|比较两个值是否相等|@param obj1 {Any}<br>@param obj2 {Any}
+eq|比较两个值<br>是否相等|@param obj1 {Any}<br>@param obj2 {Any}
 
 ## 代码示例
 ```js
