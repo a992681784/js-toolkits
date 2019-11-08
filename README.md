@@ -6,7 +6,8 @@
 [npm-url]: https://npmjs.org/package/js-toolkits
 [downloads-image]: https://badgen.net/npm/dt/js-toolkits
 [downloads-url]: https://npmjs.org/package/js-toolkits
-一个封装获取url参数，手机号、邮箱正则检测，sessionStorage、localStorage、cookie操作等常用方法的js工具库
+一个封装获取url参数，手机号、邮箱正则检测，sessionStorage、localStorage、cookie操作等常用方法的js工具库   
+相关介绍：[【总结】做一个自己的前端js工具库](https://juejin.im/post/5daebab45188250ec90be71b "js-toolkits")
 ## 使用方式
 注：为简化操作，默认命名为"tks"
 
@@ -54,7 +55,7 @@ storage| 操作sessionStorage、<br>localStorage、cookie|@param type {String\|N
 min|数组最小值|@param arr {Array} 数组
 max|数组最大值|@param arr {Array} 数组
 sort|数组升降排序|@param arr {Array} 数组<br>@param type {Boolean} 非false、0、''、null、undefined开启降序
-eq|比较两个值是否相等|@param obj1 {Any}<br>@param obj2 {Any}
+eq|比较两个值<br>是否相等|@param obj1 {Any}<br>@param obj2 {Any}
 
 ## 代码示例
 ```js
