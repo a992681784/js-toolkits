@@ -1,4 +1,6 @@
 import StorageUtil from '../node_modules/storage-util/dist/storage-util.es';
+// @ts-ignore
+import {version} from '../package.json'
 
 let isFunction: Function = (obj: any): boolean => {
 	return typeof obj === "function" && typeof obj.nodeType !== "number";
@@ -250,6 +252,7 @@ let toolkits = {
 	 */
 	eq(obj1: any, obj2: any): boolean {
 		return eq(obj1, obj2);
-	}
+	},
+	version,
 }
 export default toolkits;

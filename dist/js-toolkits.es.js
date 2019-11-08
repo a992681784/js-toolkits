@@ -1,5 +1,5 @@
 /**
- * js-toolkits v1.0.5
+ * js-toolkits v1.0.6
  * (c) 2019-2019 weijhfly https://github.com/weijhfly/js-toolkits
  * Licensed under MIT
  * Released on: oct 21, 2019
@@ -138,6 +138,8 @@ var StorageUtil = /** @class */ (function () {
     };
     return StorageUtil;
 }());
+
+var version = "1.0.6";
 
 var isFunction = function (obj) {
     return typeof obj === "function" && typeof obj.nodeType !== "number";
@@ -381,7 +383,8 @@ var toolkits = {
      */
     eq: function (obj1, obj2) {
         return eq(obj1, obj2);
-    }
+    },
+    version: version,
 };
 
 export default toolkits;
