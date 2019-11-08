@@ -54,6 +54,7 @@ storage| 操作sessionStorage、<br>localStorage、cookie|@param type {String\|N
 min|数组最小值|@param arr {Array} 数组
 max|数组最大值|@param arr {Array} 数组
 sort|数组升降排序|@param arr {Array} 数组<br>@param type {Boolean} 非false、0、''、null、undefined开启降序
+eq|比较两个值是否相等|@param obj1 {Any}<br>@param obj2 {Any}
 
 ## 代码示例
 ```js
@@ -152,9 +153,10 @@ tks.storage().set('msg','你翩翩地路过，').get('msg',function(msg){
     console.log(msg);
 })
 
-/*
-*	数组最小最大数值
-*/
+/**
+ * min max 数组中最小最大数值
+ * @param arr {Array} 数组
+ */
 console.log('min max-----------');
 let min = tks.min([1,3,5,7,9]);
 let max = tks.max([2,4,6,8,10]);
@@ -175,6 +177,23 @@ let sort3 = tks.sort([0,1,5,10,15],true);
 console.log(sort1);
 console.log(sort2);
 console.log(sort3);
+
+/**
+ * eq 比较两个值是否相等(主要参考了underscore)
+ * @param obj1 {Any}
+ * @param obj2 {Any}
+ */
+console.log('eq-----------');
+
+let b1 = tks.eq(1,1);
+let b2 = tks.eq(NaN,NaN);
+let b3 = tks.eq([],[]);
+let b4 = tks.eq({x: 1},{y: 2});
+
+console.log(b1);
+console.log(b2);
+console.log(b3);
+console.log(b4);
 ```
 
 ## License

@@ -1,13 +1,13 @@
 import StorageUtil from '../node_modules/storage-util/dist/storage-util.es';
 
-let isFunction = (obj: any) => {
+let isFunction: Function = (obj: any): boolean => {
 	return typeof obj === "function" && typeof obj.nodeType !== "number";
 }
-let isWindow = (obj: any) => {
+let isWindow: Function = (obj: any): boolean => {
 	return obj != null && obj === obj.window;
 }
-let isArrayLike = (obj: any) => {
-	let length = !!obj && "length" in obj && obj.length;
+let isArrayLike: Function = (obj: any): boolean => {
+	let length: number = !!obj && "length" in obj && obj.length;
 
 	if (isFunction(obj) || isWindow(obj)) {
 		return false;
@@ -15,7 +15,79 @@ let isArrayLike = (obj: any) => {
 
 	return toString.call(obj) === "[object Array]" || length === 0 ||
 		typeof length === "number" && length > 0 && (length - 1) in obj;
-};
+}
+let hasOwnProperty: Function = Object.prototype.hasOwnProperty;
+let SymbolProto: object = typeof Symbol !== 'undefined' ? Symbol.prototype : null;
+let keys: Function = Object.keys;
+
+let eq: Function, deepEq: Function;
+
+eq = (a: any, b: any, aStack: Array<any>, bStack: Array<any>): Boolean => {
+	if (a === b) return a !== 0 || 1 / a === 1 / b;
+	if (a == null || b == null) return false;
+	if (a !== a) return b !== b;
+	let type: string = typeof a;
+
+	if (type !== 'function' && type !== 'object' && typeof b != 'object') return false;
+	return deepEq(a, b, aStack, bStack)
+}
+deepEq = (a: any, b: any, aStack: Array<any>, bStack: Array<any>): boolean => {
+	let className: string = toString.call(a);
+
+	if (className !== toString.call(b)) return false;
+	switch (className) {
+		case '[object RegExp]':
+		case '[object String]':
+			return '' + a === '' + b;
+		case '[object Number]':
+			if (+ a !== +a) return + b !== +b;
+			return + a === 0 ? 1 / +a === 1 / b : +a === +b;
+		case '[object Date]':
+		case '[object Boolean]':
+			return + a === +b;
+		case '[object Symbol]':
+			return SymbolProto.valueOf.call(a) === SymbolProto.valueOf.call(b)
+	}
+	let areArrays: boolean = className === '[object Array]';
+
+	if (!areArrays) {
+		if (typeof a != 'object' || typeof b != 'object') return false;
+		let aCtor = a.constructor,
+			bCtor = b.constructor;
+		if (aCtor !== bCtor && !(isFunction(aCtor) && aCtor instanceof aCtor && isFunction(bCtor) && bCtor instanceof bCtor) && ('constructor' in a && 'constructor' in b)) {
+			return false
+		}
+	}
+	aStack = aStack || [];
+	bStack = bStack || [];
+	let length: number = aStack.length;
+
+	while (length--) {
+		if (aStack[length] === a) return bStack[length] === b
+	}
+	aStack.push(a);
+	bStack.push(b);
+	if (areArrays) {
+		length = a.length;
+		if (length !== b.length) return false;
+		while (length--) {
+			if (!eq(a[length], b[length], aStack, bStack)) return false
+		}
+	} else {
+		let thatKeys: Array<any> = keys(a),
+			key: string;
+
+		length = thatKeys.length;
+		if (keys(b).length !== length) return false;
+		while (length--) {
+			key = thatKeys[length];
+			if (!(toolkits.has(b, key) && eq(a[key], b[key], aStack, bStack))) return false
+		}
+	}
+	aStack.pop();
+	bStack.pop();
+	return true
+}
 
 let toolkits = {
 	/**
@@ -23,7 +95,7 @@ let toolkits = {
 	 * @param str {String} 需要处理的字符串
 	 * @param type {Boolean} 是否去除所有空格
 	 */
-	trim(str: string, type: Boolean): string {
+	trim(str: string, type: boolean): string {
 		return type ? str.replace(/\s+/g, '') : str.replace(/^\s+|\s+$/g, '');
 	},
 	/**
@@ -59,7 +131,7 @@ let toolkits = {
 	 * @param 参数为2个且第二个参数不为true时，获取指定url的指定参数；
 	 * @param 参数为2个且第二个参数为true时，获取指定url的所有参数；
 	 */
-	get(): string | Object {
+	get(): string | object {
 		let args = arguments,
 			len = args.length,
 			url: string;
@@ -71,7 +143,7 @@ let toolkits = {
 		}
 		url = url.substring(url.indexOf('?') + 1);
 		let arr = url.split('&'),
-			obj: string | Object = {};
+			obj: string | object = {};
 
 		this.each(arr, (v, i) => {
 			if (v.indexOf('=') != -1) {
@@ -106,7 +178,7 @@ let toolkits = {
 	 * @param type {String} 类型
 	 * @param str {String} 需要检测的字符串
 	 */
-	test(type: string, str: string): Boolean {
+	test(type: string, str: string): boolean {
 		switch (type) {
 			case 'phone':
 				return /^1[3456789]\d{9}$/.test(str);
@@ -133,11 +205,17 @@ let toolkits = {
 	storage(type: string) {
 		return new StorageUtil(type);
 	},
-	//数组中最小数值
+	/**
+	 * min 数组中最小数值
+	 * @param arr {Array} 数组
+	 */
 	min(arr: Array<number>): number {
 		return Math.min.apply(null, arr);
 	},
-	//数组中最大数值
+	/**
+	 * max 数组中最大数值
+	 * @param arr {Array} 数组
+	 */
 	max(arr: Array<number>): number {
 		return Math.max.apply(null, arr);
 	},
@@ -146,7 +224,7 @@ let toolkits = {
 	 * @param arr {Array} 数组
 	 * @param type {Boolean} 非false、0、''、null、undefined开启降序
 	 */
-	sort(arr: Array<number>, type: Boolean): Array<number> {
+	sort(arr: Array<number>, type: boolean): Array<number> {
 		return arr.sort((v1, v2) => {
 			if (v1 < v2) {
 				return type ? 1 : -1;
@@ -156,6 +234,22 @@ let toolkits = {
 				return 0;
 			}
 		})
+	},
+	/**
+	 * has Object 检测对象是否有指定key(hasOwnProperty方法)
+	 * @param obj {Object} object
+	 * @param key {String} key
+	 */
+	has(obj: Object, key: string): boolean {
+		return hasOwnProperty.call(obj, key);
+	},
+	/**
+	 * eq 比较两个值是否相等(主要参考了underscore)
+	 * @param obj1 {Any}
+	 * @param obj2 {Any}
+	 */
+	eq(obj1: any, obj2: any): boolean {
+		return eq(obj1, obj2);
 	}
 }
 export default toolkits;

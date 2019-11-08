@@ -24,4 +24,11 @@ test('param', () => {
 // sort
 test('sort', () => {
   expect(tks.sort([1,5,7,9,2])).toEqual([1,2,5,7,9])
+  expect(tks.sort([1,5,7,9,2],true)).toEqual([9,7,5,2,1])
+})
+
+// eq
+test('eq', () => {
+  expect(tks.eq(window, alert)).toEqual(false)
+  expect(tks.eq(1,2)).toEqual(false)
 })

@@ -1,5 +1,5 @@
 /**
- * js-toolkits v1.0.4
+ * js-toolkits v1.0.5
  * (c) 2019-2019 weijhfly https://github.com/weijhfly/js-toolkits
  * Licensed under MIT
  * Released on: oct 21, 2019
@@ -155,6 +155,82 @@ var isArrayLike = function (obj) {
     return toString.call(obj) === "[object Array]" || length === 0 ||
         typeof length === "number" && length > 0 && (length - 1) in obj;
 };
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var SymbolProto = typeof Symbol !== 'undefined' ? Symbol.prototype : null;
+var keys = Object.keys;
+var eq, deepEq;
+eq = function (a, b, aStack, bStack) {
+    if (a === b)
+        return a !== 0 || 1 / a === 1 / b;
+    if (a == null || b == null)
+        return false;
+    if (a !== a)
+        return b !== b;
+    var type = typeof a;
+    if (type !== 'function' && type !== 'object' && typeof b != 'object')
+        return false;
+    return deepEq(a, b, aStack, bStack);
+};
+deepEq = function (a, b, aStack, bStack) {
+    var className = toString.call(a);
+    if (className !== toString.call(b))
+        return false;
+    switch (className) {
+        case '[object RegExp]':
+        case '[object String]':
+            return '' + a === '' + b;
+        case '[object Number]':
+            if (+a !== +a)
+                return +b !== +b;
+            return +a === 0 ? 1 / +a === 1 / b : +a === +b;
+        case '[object Date]':
+        case '[object Boolean]':
+            return +a === +b;
+        case '[object Symbol]':
+            return SymbolProto.valueOf.call(a) === SymbolProto.valueOf.call(b);
+    }
+    var areArrays = className === '[object Array]';
+    if (!areArrays) {
+        if (typeof a != 'object' || typeof b != 'object')
+            return false;
+        var aCtor = a.constructor, bCtor = b.constructor;
+        if (aCtor !== bCtor && !(isFunction(aCtor) && aCtor instanceof aCtor && isFunction(bCtor) && bCtor instanceof bCtor) && ('constructor' in a && 'constructor' in b)) {
+            return false;
+        }
+    }
+    aStack = aStack || [];
+    bStack = bStack || [];
+    var length = aStack.length;
+    while (length--) {
+        if (aStack[length] === a)
+            return bStack[length] === b;
+    }
+    aStack.push(a);
+    bStack.push(b);
+    if (areArrays) {
+        length = a.length;
+        if (length !== b.length)
+            return false;
+        while (length--) {
+            if (!eq(a[length], b[length], aStack, bStack))
+                return false;
+        }
+    }
+    else {
+        var thatKeys = keys(a), key = void 0;
+        length = thatKeys.length;
+        if (keys(b).length !== length)
+            return false;
+        while (length--) {
+            key = thatKeys[length];
+            if (!(toolkits.has(b, key) && eq(a[key], b[key], aStack, bStack)))
+                return false;
+        }
+    }
+    aStack.pop();
+    bStack.pop();
+    return true;
+};
 var toolkits = {
     /**
      * trim 字符串去除空格
@@ -260,11 +336,17 @@ var toolkits = {
     storage: function (type) {
         return new StorageUtil(type);
     },
-    //数组中最小数值
+    /**
+     * min 数组中最小数值
+     * @param arr {Array} 数组
+     */
     min: function (arr) {
         return Math.min.apply(null, arr);
     },
-    //数组中最大数值
+    /**
+     * max 数组中最大数值
+     * @param arr {Array} 数组
+     */
     max: function (arr) {
         return Math.max.apply(null, arr);
     },
@@ -285,6 +367,22 @@ var toolkits = {
                 return 0;
             }
         });
+    },
+    /**
+     * has Object 检测对象是否有指定key(hasOwnProperty方法)
+     * @param obj {Object} object
+     * @param key {String} key
+     */
+    has: function (obj, key) {
+        return hasOwnProperty.call(obj, key);
+    },
+    /**
+     * eq 比较两个值是否相等(主要参考了underscore)
+     * @param obj1 {Any}
+     * @param obj2 {Any}
+     */
+    eq: function (obj1, obj2) {
+        return eq(obj1, obj2);
     }
 };
 
