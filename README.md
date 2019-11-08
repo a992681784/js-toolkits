@@ -6,7 +6,8 @@
 [npm-url]: https://npmjs.org/package/js-toolkits
 [downloads-image]: https://badgen.net/npm/dt/js-toolkits
 [downloads-url]: https://npmjs.org/package/js-toolkits
-一个封装获取url参数，手机号、邮箱正则检测，sessionStorage、localStorage、cookie操作等常用方法的js工具库
+一个封装获取url参数，手机号、邮箱正则检测，sessionStorage、localStorage、cookie操作等常用方法的js工具库   
+相关介绍：[【总结】做一个自己的前端js工具库](https://juejin.im/post/5daebab45188250ec90be71b "js-toolkits")
 ## 使用方式
 注：为简化操作，默认命名为"tks"
 
