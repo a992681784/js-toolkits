@@ -1,6 +1,7 @@
 import StorageUtil from '../node_modules/storage-util/dist/storage-util.es';
+import './utils/es6-object-assign';
 // @ts-ignore
-import {version} from '../package.json'
+import { version } from '../package.json';
 
 let isFunction: Function = (obj: any): boolean => {
 	return typeof obj === "function" && typeof obj.nodeType !== "number";
@@ -252,6 +253,128 @@ let toolkits = {
 	 */
 	eq(obj1: any, obj2: any): boolean {
 		return eq(obj1, obj2);
+	},
+	/**
+	 * ajaxSetup 全局设置ajax
+	 * 所有回调函数返回false会阻止下一步执行
+	 * @param before {Function} ajax发起请求之前，返回options、xhr，可统一修改options
+	 * @param after {Function} ajax成功返回之后，返回response、options、xhr，可统一修改response
+	 * @param error {Function} ajax失败回调，返回status、options、xhr
+	 */
+	ajaxSetup: {
+		before(options: object, xhr: XMLHttpRequest) { },
+		after(response: any, options: object, xhr: XMLHttpRequest) { },
+		error(status: any, options: object, xhr: XMLHttpRequest) { }
+	},
+	/**
+	 * ajax 封装ajax方法
+	 * @param options.type {String} get或者post请求,默认get
+	 * @param options.url {String} 请求路径,默认当前路径
+	 * @param options.async {String} 同步或异步，默认true 异步
+	 * @param options.data {Any} 参数，可以是对象、FormData、Blob等
+	 * @param options.headers {Object} 设置请求头
+	 * @param options.timeout {Number} 超时时间，默认0，无限制，超时触发error
+	 * @param options.dataType {String} 响应数据的类型，默认json
+	 * @param options.success {Function} ajax的成功回调，返回response、options、当前XMLHttpRequest实例
+	 * @param options.error {Function} ajax的失败回调，返回status/'not support ajax'/'timeout'、options、当前XMLHttpRequest实例
+	 */
+	ajax(options: object) {
+		let _options: any = Object.assign({
+			type: 'get',
+			url: '',
+			async: true,
+			data: null,
+			headers: {},// 设置请求头
+			timeout: 0,
+			dataType: 'json',
+			success() { },
+			error() { }
+		}, options),
+			self = this;
+
+		let xhr: XMLHttpRequest;
+
+		if (window.XMLHttpRequest) {
+			xhr = new XMLHttpRequest();
+		} else if (window.ActiveXObject) {
+			xhr = new ActiveXObject('Microsoft.XMLHTTP');
+		} else {
+			error('not support ajax');
+			return false;
+		}
+
+		if(self.ajaxSetup.before){
+			let beforeFlag: any =  self.ajaxSetup.before(_options, xhr);
+
+			if(beforeFlag === false){ return false; }
+		}
+
+		_options.type = _options.type.toUpperCase();
+
+		xhr.timeout = _options.timeout;
+		xhr.responseType = _options.dataType;
+
+		let sendData: string;
+		if (_options.data && _options.data.toString && _options.data.toString() == '[object Object]') {
+			sendData = self.param(_options.data);
+		}
+		if (_options.type == 'GET') {
+			let url: string = `${_options.url}${sendData? (_options.url.indexOf('?') == -1? '?':'&') + sendData : ''}`;
+
+			xhr.open(_options.type, url, _options.async);
+			beforeXhr();
+			xhr.send(null);
+		} else if (_options.type == 'POST') {
+			xhr.open(_options.type, _options.url, _options.async);
+			beforeXhr();
+			// 非普通对象不会转换为字符串，可以传递FormData、Blob...
+			xhr.send(sendData);
+		}
+
+		xhr.onreadystatechange = () => {
+			if (xhr.readyState == 4) {
+				if(xhr.status == 200){
+					success();
+				}else{
+					error(xhr.status);
+				}
+			}
+		}
+
+		xhr.ontimeout = () => {
+			error('timeout');
+		}
+
+		function beforeXhr() {
+			_options.headers['X-Requested-With'] = 'XMLHttpRequest';
+			if (_options.type == 'POST') {
+				_options.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
+			}
+			if (Object.keys(_options.headers).length) {
+				self.each(_options.headers, (v: string, i: string) => {
+					xhr.setRequestHeader(i, v);
+				})
+			}
+		}
+
+		function error(status: any) {
+			if(self.ajaxSetup.error){
+				let errorFlag: any =  self.ajaxSetup.error(status, _options, xhr);
+
+				if(errorFlag === false){ return false; }
+			}
+			_options.error(status, _options, xhr);
+		}
+
+		function success() {
+			if(self.ajaxSetup.after){
+				let afterFlag: any =  self.ajaxSetup.after(xhr.response, _options, xhr);
+
+				if(afterFlag === false){ return false; }
+			}
+			// 也把xhr返回，有时候需要获取响应头等，可自行处理
+			_options.success(xhr.response, _options, xhr);
+		}
 	},
 	version,
 }
