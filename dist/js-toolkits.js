@@ -1,5 +1,5 @@
 /**
- * js-toolkits v1.1.6
+ * js-toolkits v1.1.7
  * (c) 2019-2019 weijhfly https://github.com/weijhfly/js-toolkits
  * Licensed under MIT
  * Released on: oct 21, 2019
@@ -186,7 +186,7 @@
     }
     polyfill();
 
-    var version = "1.1.6";
+    var version = "1.1.7";
 
     var isFunction = function (obj) {
         return typeof obj === "function" && typeof obj.nodeType !== "number";

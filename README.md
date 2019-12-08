@@ -6,35 +6,35 @@
 [npm-url]: https://npmjs.org/package/js-toolkits
 [downloads-image]: https://badgen.net/npm/dt/js-toolkits
 [downloads-url]: https://npmjs.org/package/js-toolkits
-一个封装获取url参数，手机号、邮箱正则检测，sessionStorage、localStorage、cookie操作等常用方法的js工具库   
+一个封装获取url参数，ajax方法，手机号、邮箱正则检测，sessionStorage、localStorage、cookie操作等常用方法的js工具库   
 相关介绍：[【总结】做一个自己的前端js工具库](https://juejin.im/post/5daebab45188250ec90be71b "js-toolkits")
 ## 使用方式
 注：为简化操作，默认命名为"tks"
 
 ```js
-npm install --save js-tookits
+npm install --save js-toolkits
 ```
 
-### es6
+### ES6
 ```js
-import tks from 'js-tookits'
+import tks from 'js-toolkits'
 tks.trim('test')
 ```
-### commonJS
+### CommonJS
 ```js
-var tks = require('js-tookits');
+var tks = require('js-toolkits');
 tks.trim('test')
 ```
-### amd
+### AMD
 ```js
-require(['js-tookits'],function(tks){
+require(['js-toolkits'],function(tks){
  tks.trim('test')
 })
 ```
-### cmd
+### CMD
 ```js
-seajs.use('js-tookits',function(undefined){
-    //插件没有遵循cmd规范，这里的tks是全局的
+seajs.use('js-toolkits',function(undefined){
+    //插件没有遵循CMD规范，这里的tks是全局的
     tks.trim('test')
 });
 ```
