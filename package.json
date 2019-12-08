@@ -1,6 +1,6 @@
 {
   "name": "js-toolkits",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "一个小巧而实用的js工具库",
   "main": "dist/js-toolkits.min.js",
   "scripts": {
