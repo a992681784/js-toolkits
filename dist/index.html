@@ -158,15 +158,74 @@
 			 */
 			 console.log('eq-----------');
 
-			 let b1 = tks.eq(1,1);
-			 let b2 = tks.eq(NaN,NaN);
-			 let b3 = tks.eq([],[]);
-			 let b4 = tks.eq({x: 1},{y: 2});
+			 let e1 = tks.eq(1,1);
+			 let e2 = tks.eq(NaN,NaN);
+			 let e3 = tks.eq([],[]);
+			 let e4 = tks.eq({x: 1},{y: 2});
 
-			 console.log(b1);
-			 console.log(b2);
-			 console.log(b3);
-			 console.log(b4);
+			 console.log(e1);
+			 console.log(e2);
+			 console.log(e3);
+			 console.log(e4);
+
+			/**
+			 * ajaxSetup 全局设置ajax
+			 * 所有回调函数返回false会阻止下一步执行
+			 * @param before {Function} ajax发起请求之前，返回options、xhr，可统一修改options
+			 * @param after {Function} ajax成功返回之后，返回response、options、xhr，可统一修改response
+			 * @param error {Function} ajax失败回调，返回status、options、xhr
+			 */
+			 console.log('ajaxSetup-----------');
+
+			 tks.ajaxSetup.before = (options) => {
+				console.log('ajaxSetup before')
+				options.data.ajaxSetup = 1;
+				//return false;
+			 }
+			 tks.ajaxSetup.after = (data) => {
+				console.log('ajaxSetup after', data.match(/js-toolkits/)[0])
+				//return false;
+			 }
+			 tks.ajaxSetup.error = (status) => {
+				console.log('ajaxSetup error', status)
+				//return false;
+			 }
+			 /**
+			 * ajax 封装ajax方法
+			 * @param options.type {String} get或者post请求,默认get
+			 * @param options.url {String} 请求路径,默认当前路径
+			 * @param options.async {String} 同步或异步，默认true 异步
+			 * @param options.data {Any} 参数，可以是对象、FormData、Blob等
+			 * @param options.headers {Object} 设置请求头
+			 * @param options.timeout {Number} 超时时间，默认0，无限制，超时触发error
+			 * @param options.dataType {String} 响应数据的类型，默认json
+			 * @param options.success {Function} ajax的成功回调，返回response、options、当前XMLHttpRequest实例
+			 * @param options.error {Function} ajax的失败回调，返回status/'not support ajax'/'timeout'、options、当前XMLHttpRequest实例
+			 */
+			 console.log('ajax-----------');
+
+			 tks.ajax({
+				 type: 'get',
+				 url: '',
+				 data: {test: 1},
+				 dataType: 'text',
+				 success: function(data, options, xhr){
+					console.log(data.match(/js-toolkits/)[0], options, xhr);
+				 }
+			 })
+
+			 tks.ajax({
+				 type: 'post',
+				 url: '',
+				 data: {test: 1, post: 1},
+				 dataType: 'json', // 默认json，可省略
+				 success: function(data, options, xhr){
+					console.log(data, options, xhr);
+				 },
+				 error: function(status, options, xhr){
+					console.log(status, options, xhr);
+				 }
+			 })
 		}
 	</script>
 	<script>

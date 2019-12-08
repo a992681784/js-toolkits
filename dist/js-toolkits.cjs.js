@@ -1,5 +1,5 @@
 /**
- * js-toolkits v1.0.6
+ * js-toolkits v1.1.6
  * (c) 2019-2019 weijhfly https://github.com/weijhfly/js-toolkits
  * Licensed under MIT
  * Released on: oct 21, 2019
@@ -141,7 +141,48 @@ var StorageUtil = /** @class */ (function () {
     return StorageUtil;
 }());
 
-var version = "1.0.6";
+/**
+ * Code refactored from Mozilla Developer Network:
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+ */
+
+function assign(target, firstSource) {
+  if (target === undefined || target === null) {
+    throw new TypeError('Cannot convert first argument to object');
+  }
+
+  var to = Object(target);
+  for (var i = 1; i < arguments.length; i++) {
+    var nextSource = arguments[i];
+    if (nextSource === undefined || nextSource === null) {
+      continue;
+    }
+
+    var keysArray = Object.keys(Object(nextSource));
+    for (var nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex++) {
+      var nextKey = keysArray[nextIndex];
+      var desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
+      if (desc !== undefined && desc.enumerable) {
+        to[nextKey] = nextSource[nextKey];
+      }
+    }
+  }
+  return to;
+}
+
+function polyfill() {
+  if (!Object.assign) {
+    Object.defineProperty(Object, 'assign', {
+      enumerable: false,
+      configurable: true,
+      writable: true,
+      value: assign
+    });
+  }
+}
+polyfill();
+
+var version = "1.1.6";
 
 var isFunction = function (obj) {
     return typeof obj === "function" && typeof obj.nodeType !== "number";
@@ -385,6 +426,122 @@ var toolkits = {
      */
     eq: function (obj1, obj2) {
         return eq(obj1, obj2);
+    },
+    /**
+     * ajaxSetup 全局设置ajax
+     * 所有回调函数返回false会阻止下一步执行
+     * @param before {Function} ajax发起请求之前，返回options、xhr，可统一修改options
+     * @param after {Function} ajax成功返回之后，返回response、options、xhr，可统一修改response
+     * @param error {Function} ajax失败回调，返回status、options、xhr
+     */
+    ajaxSetup: {
+        before: function (options, xhr) { },
+        after: function (response, options, xhr) { },
+        error: function (status, options, xhr) { }
+    },
+    /**
+     * ajax 封装ajax方法
+     * @param options.type {String} get或者post请求,默认get
+     * @param options.url {String} 请求路径,默认当前路径
+     * @param options.async {String} 同步或异步，默认true 异步
+     * @param options.data {Any} 参数，可以是对象、FormData、Blob等
+     * @param options.headers {Object} 设置请求头
+     * @param options.timeout {Number} 超时时间，默认0，无限制，超时触发error
+     * @param options.dataType {String} 响应数据的类型，默认json
+     * @param options.success {Function} ajax的成功回调，返回response、options、当前XMLHttpRequest实例
+     * @param options.error {Function} ajax的失败回调，返回status/'not support ajax'/'timeout'、options、当前XMLHttpRequest实例
+     */
+    ajax: function (options) {
+        var _options = Object.assign({
+            type: 'get',
+            url: '',
+            async: true,
+            data: null,
+            headers: {},
+            timeout: 0,
+            dataType: 'json',
+            success: function () { },
+            error: function () { }
+        }, options), self = this;
+        var xhr;
+        if (window.XMLHttpRequest) {
+            xhr = new XMLHttpRequest();
+        }
+        else if (window.ActiveXObject) {
+            xhr = new ActiveXObject('Microsoft.XMLHTTP');
+        }
+        else {
+            error('not support ajax');
+            return false;
+        }
+        if (self.ajaxSetup.before) {
+            var beforeFlag = self.ajaxSetup.before(_options, xhr);
+            if (beforeFlag === false) {
+                return false;
+            }
+        }
+        _options.type = _options.type.toUpperCase();
+        xhr.timeout = _options.timeout;
+        xhr.responseType = _options.dataType;
+        var sendData;
+        if (_options.data && _options.data.toString && _options.data.toString() == '[object Object]') {
+            sendData = self.param(_options.data);
+        }
+        if (_options.type == 'GET') {
+            var url = "" + _options.url + (sendData ? (_options.url.indexOf('?') == -1 ? '?' : '&') + sendData : '');
+            xhr.open(_options.type, url, _options.async);
+            beforeXhr();
+            xhr.send(null);
+        }
+        else if (_options.type == 'POST') {
+            xhr.open(_options.type, _options.url, _options.async);
+            beforeXhr();
+            // 非普通对象不会转换为字符串，可以传递FormData、Blob...
+            xhr.send(sendData);
+        }
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4) {
+                if (xhr.status == 200) {
+                    success();
+                }
+                else {
+                    error(xhr.status);
+                }
+            }
+        };
+        xhr.ontimeout = function () {
+            error('timeout');
+        };
+        function beforeXhr() {
+            _options.headers['X-Requested-With'] = 'XMLHttpRequest';
+            if (_options.type == 'POST') {
+                _options.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
+            }
+            if (Object.keys(_options.headers).length) {
+                self.each(_options.headers, function (v, i) {
+                    xhr.setRequestHeader(i, v);
+                });
+            }
+        }
+        function error(status) {
+            if (self.ajaxSetup.error) {
+                var errorFlag = self.ajaxSetup.error(status, _options, xhr);
+                if (errorFlag === false) {
+                    return false;
+                }
+            }
+            _options.error(status, _options, xhr);
+        }
+        function success() {
+            if (self.ajaxSetup.after) {
+                var afterFlag = self.ajaxSetup.after(xhr.response, _options, xhr);
+                if (afterFlag === false) {
+                    return false;
+                }
+            }
+            // 也把xhr返回，有时候需要获取响应头等，可自行处理
+            _options.success(xhr.response, _options, xhr);
+        }
     },
     version: version,
 };
