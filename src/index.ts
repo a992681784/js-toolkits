@@ -1,5 +1,4 @@
 import StorageUtil from '../node_modules/storage-util/dist/storage-util.es';
-import './utils/es6-object-assign';
 // @ts-ignore
 import { version } from '../package.json';
 
@@ -279,7 +278,7 @@ let toolkits = {
 	 * @param options.error {Function} ajax的失败回调，返回status/'not support ajax'/'timeout'、options、当前XMLHttpRequest实例
 	 */
 	ajax(options: object) {
-		let _options: any = Object.assign({
+		let _options: any = {
 			type: 'get',
 			url: '',
 			async: true,
@@ -289,8 +288,12 @@ let toolkits = {
 			dataType: 'json',
 			success() { },
 			error() { }
-		}, options),
+			},
 			self = this;
+		
+		self.each(_options, (v, i) => {
+			_options[i] = options[i] || v;
+		})
 
 		let xhr: XMLHttpRequest;
 
