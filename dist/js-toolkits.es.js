@@ -1,5 +1,5 @@
 /**
- * js-toolkits v1.1.7
+ * js-toolkits v1.1.8
  * (c) 2019-2019 weijhfly https://github.com/weijhfly/js-toolkits
  * Licensed under MIT
  * Released on: oct 21, 2019
@@ -139,48 +139,7 @@ var StorageUtil = /** @class */ (function () {
     return StorageUtil;
 }());
 
-/**
- * Code refactored from Mozilla Developer Network:
- * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
- */
-
-function assign(target, firstSource) {
-  if (target === undefined || target === null) {
-    throw new TypeError('Cannot convert first argument to object');
-  }
-
-  var to = Object(target);
-  for (var i = 1; i < arguments.length; i++) {
-    var nextSource = arguments[i];
-    if (nextSource === undefined || nextSource === null) {
-      continue;
-    }
-
-    var keysArray = Object.keys(Object(nextSource));
-    for (var nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex++) {
-      var nextKey = keysArray[nextIndex];
-      var desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
-      if (desc !== undefined && desc.enumerable) {
-        to[nextKey] = nextSource[nextKey];
-      }
-    }
-  }
-  return to;
-}
-
-function polyfill() {
-  if (!Object.assign) {
-    Object.defineProperty(Object, 'assign', {
-      enumerable: false,
-      configurable: true,
-      writable: true,
-      value: assign
-    });
-  }
-}
-polyfill();
-
-var version = "1.1.7";
+var version = "1.1.8";
 
 var isFunction = function (obj) {
     return typeof obj === "function" && typeof obj.nodeType !== "number";
@@ -315,7 +274,7 @@ var toolkits = {
     get: function () {
         var args = arguments, len = args.length, url;
         if (len == 1 || len == 0) {
-            url = location.search;
+            url = location.href;
         }
         else {
             url = args[0];
@@ -450,7 +409,7 @@ var toolkits = {
      * @param options.error {Function} ajax的失败回调，返回status/'not support ajax'/'timeout'、options、当前XMLHttpRequest实例
      */
     ajax: function (options) {
-        var _options = Object.assign({
+        var _options = {
             type: 'get',
             url: '',
             async: true,
@@ -460,7 +419,10 @@ var toolkits = {
             dataType: 'json',
             success: function () { },
             error: function () { }
-        }, options), self = this;
+        }, self = this;
+        self.each(_options, function (v, i) {
+            _options[i] = options[i] || v;
+        });
         var xhr;
         if (window.XMLHttpRequest) {
             xhr = new XMLHttpRequest();
@@ -515,11 +477,9 @@ var toolkits = {
             if (_options.type == 'POST') {
                 _options.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
             }
-            if (Object.keys(_options.headers).length) {
-                self.each(_options.headers, function (v, i) {
-                    xhr.setRequestHeader(i, v);
-                });
-            }
+            self.each(_options.headers, function (v, i) {
+                xhr.setRequestHeader(i, v);
+            });
         }
         function error(status) {
             if (self.ajaxSetup.error) {
