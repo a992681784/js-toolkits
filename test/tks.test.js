@@ -9,11 +9,10 @@ test('trim 2', () => {
 })
 
 // get
-test('get 1', () => {
+test('get', () => {
   expect(tks.get('www.baidu.com?aa=1&bb=2&cc=3','aa')).toBe('1')
-})
-test('get 2', () => {
   expect(tks.get('www.baidu.com?aa=1&bb=2&cc=3',true)).toEqual({aa: "1", bb: "2", cc: "3"})
+  expect(tks.get('www.baidu.com/#/site?dd=4','dd')).toBe('4')
 })
 
 // param

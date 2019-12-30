@@ -139,7 +139,7 @@ let toolkits = {
 			url: string;
 
 		if (len == 1 || len == 0) {
-			url = location.search;
+			url = location.href;
 		} else {
 			url = args[0];
 		}
@@ -353,11 +353,9 @@ let toolkits = {
 			if (_options.type == 'POST') {
 				_options.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
 			}
-			if (Object.keys(_options.headers).length) {
-				self.each(_options.headers, (v: string, i: string) => {
-					xhr.setRequestHeader(i, v);
-				})
-			}
+			self.each(_options.headers, (v: string, i: string) => {
+				xhr.setRequestHeader(i, v);
+			})
 		}
 
 		function error(status: any) {

@@ -1,5 +1,5 @@
 /**
- * js-toolkits v1.1.7
+ * js-toolkits v1.1.8
  * (c) 2019-2019 weijhfly https://github.com/weijhfly/js-toolkits
  * Licensed under MIT
  * Released on: oct 21, 2019
@@ -145,7 +145,7 @@
         return StorageUtil;
     }());
 
-    var version = "1.1.7";
+    var version = "1.1.8";
 
     var isFunction = function (obj) {
         return typeof obj === "function" && typeof obj.nodeType !== "number";
@@ -280,7 +280,7 @@
         get: function () {
             var args = arguments, len = args.length, url;
             if (len == 1 || len == 0) {
-                url = location.search;
+                url = location.href;
             }
             else {
                 url = args[0];
@@ -483,11 +483,9 @@
                 if (_options.type == 'POST') {
                     _options.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
                 }
-                if (Object.keys(_options.headers).length) {
-                    self.each(_options.headers, function (v, i) {
-                        xhr.setRequestHeader(i, v);
-                    });
-                }
+                self.each(_options.headers, function (v, i) {
+                    xhr.setRequestHeader(i, v);
+                });
             }
             function error(status) {
                 if (self.ajaxSetup.error) {
