@@ -1,6 +1,6 @@
 {
   "name": "js-toolkits",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "description": "一个小巧而实用的js工具库",
   "main": "dist/js-toolkits.min.js",
   "scripts": {
@@ -42,6 +42,6 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
-    "storage-util": "^1.0.4"
+    "storage-util": "^1.1.4"
   }
 }
