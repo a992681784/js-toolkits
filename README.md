@@ -142,17 +142,17 @@ console.log(test4);
 console.log('storage-----------');
 
 //注：Chrome不支持本地html设置cookie
-tks.storage().set('msg','你翩翩地路过，').get('msg',function(msg){
+tks.storage().set('msg','你翩翩地路过').get('msg',function(msg){
     console.log(msg);
-}).setType(1).set('msg','以为不曾留下什么，').get('msg',function(msg){
+}).setType(1).set('msg','以为不曾留下什么').get('msg',function(msg){
     console.log(msg);
-}).setType(2).set('msg','却在我心里有了思念，').get('msg',function(msg){
+}).setType(2).set('msg','却在我心里有了思念').get('msg',function(msg){
     console.log(msg);
-}).setType().set('msg','若你还记得，').get('msg',function(msg){
+}).setType().set('msg','若你还记得').get('msg',function(msg){
     console.log(msg);
-}).setType(1).set('msg','那个蝉鸣的夏天，').get('msg',function(msg){
+}).setType(1).set('msg','那个蝉鸣的夏天').get('msg',function(msg){
     console.log(msg);
-}).setType(2).set('msg','有一个你，也有一个我。').get('msg',function(msg){
+}).setType(2).set('msg','有一个你，也有一个我').get('msg',function(msg){
     console.log(msg);
 })
 
